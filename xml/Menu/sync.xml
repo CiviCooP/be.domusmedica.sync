@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/sync/permamedupload</path>
+    <page_callback>CRM_Sync_Form_PermamedUpload</page_callback>
+    <title>PermamedUpload</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
