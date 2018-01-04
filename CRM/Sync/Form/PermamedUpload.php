@@ -1,6 +1,6 @@
 <?php
 /**
- * Form for the upload of the live import feed files
+ * Form to upload the PermaMed import files
  *
  * @author Klaas Eikelbooml (CiviCooP) <klaas.eikelboom@civicoop.org>
  * @date 3-jan-2018
@@ -38,6 +38,16 @@ class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
       ));
       parent::buildQuickForm();
   }
+
+    public function preProcess()
+    {
+        if (isset($this->_submitFiles['uploadFile'])) {
+            $uploadFile = $this->_submitFiles['uploadFile'];
+            $importer = new CRM_Sync_PermamedImporter();
+            $importer ->truncate();
+            $importer -> importCVStoTable($uploadFile['tmp_name']);
+        }
+    }
 
   public function postProcess() {
     // add processing of the file
