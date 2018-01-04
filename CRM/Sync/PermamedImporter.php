@@ -11,15 +11,17 @@ class CRM_Sync_PermamedImporter
 {
 
     private $fieldseperator;
+    private $skip;
 
     const
         NUM_ROWS_TO_INSERT = 100;
     /**
      * CRM_Sync_PermamedImporter constructor.
      */
-    public function __construct($fieldseperator = ',')
+    public function __construct($fieldseperator = ',',$skip=5)
     {
         $this->fieldseperator=$fieldseperator;
+        $this->skip = $skip;
     }
 
     public function truncate()
@@ -36,17 +38,48 @@ class CRM_Sync_PermamedImporter
 
         // now in code - but mebbe json it
         $mapping = array (
-          'naam' => 2,
-          'voornaam' => 3,
-          'riziv' => 19,
-          'geslacht' => 30
+          'naam' => 0,
+          'voornaam' => 1,
+          'straat' => 2,
+          'huisnummer' => 3,
+          'postcode' => 4,
+          'stad'     => 5,
+          'telefoon' => 6,
+          'gsm'      => 7,
+          'email'    => 8,
+          'fax' => 9,
+          'praktijknaam' => 10,
+          'website' => 12,
+          'rekeningnummer' => 13,
+          'riziv' => 14,
+          'straat_prive' => 15,
+          'huisnummer_prive' => 16,
+          'postcode_prive' => 17,
+          'stad_prive' => 18,
+          'telefoon_prive' => 19,
+          'gsm_prive' => 20,
+          'email_prive' => 21,
+          'rekeningnummer_prive' => 22,
+          'fax_prive' => 23,
+          'geslacht' => 24,
+          'haio' => 32,
+          'praktijk_opleider' => 34,
+          'actief_voor_wachtdienst' => 36,
+          'emd' => 39,
         );
 
         $sqlfields = array_keys($mapping);
 
 
         $fd = fopen($file, 'r');
-        fgetcsv($fd, 0, $this->fieldseperator);
+
+        $csvrow = array();
+        // skip header columns
+        for($i=0;$i<$this->skip;$i++) {
+
+            fgetcsv($fd, 0, $this->fieldseperator);
+
+        }
         $dao = new CRM_Core_DAO();
         $sql = NULL;
         $first = TRUE;
