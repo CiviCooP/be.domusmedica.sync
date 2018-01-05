@@ -13,6 +13,4 @@
             </tr>
         {/foreach}
     </table>
-
-
 {/if}
