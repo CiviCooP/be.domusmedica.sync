@@ -20,6 +20,8 @@ class CRM_Sync_Config {
 
   private $_emdCustomFieldId;
 
+  private $_isLidGroepsPraktijkRelationShipId;
+
   /**
    * CRM_Sync_Config constructor.
    */
@@ -56,6 +58,14 @@ class CRM_Sync_Config {
     } catch (Exception $ex) {
       throw new Exception('Oops: Custom Field Medisch_pakket2 not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
+    try {
+      $this->_isLidGroepsPraktijkRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+        'return' => "id",
+        'name_a_b' => "is lid van groepspraktijk",
+      ));
+    } catch (Exception $ex) {
+      throw new Exception('Oops: RelationShip Type Is lid van groepspraktijk not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+    }
   }
 
   /**
@@ -85,6 +95,16 @@ class CRM_Sync_Config {
   public function getEmdCustomFieldId() {
     return $this->_emdCustomFieldId;
   }
+
+
+  /**
+   * @return mixed
+   */
+  public function getLidGroepsPraktijkRelationShipId() {
+    return $this->_isLidGroepsPraktijkRelationShipId;
+  }
+
+
 
 
   /**
