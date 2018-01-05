@@ -30,6 +30,6 @@ CREATE TABLE `import_permamed` (
   `actief_voor_wachtdienst` SMALLINT    NOT NULL DEFAULT 0,
   `emd`                     VARCHAR(20),
   `processed`               VARCHAR(1)  NOT NULL DEFAULT 'N',
-  `message`                 VARCHAR(2000)        DEFAULT NULL,
+  `message`                 TEXT                 DEFAULT NULL,
   PRIMARY KEY (`id`)
 );

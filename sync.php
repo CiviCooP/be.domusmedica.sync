@@ -138,15 +138,15 @@ function sync_civicrm_preProcess($formName, &$form) {
  * Implements hook_civicrm_navigationMenu().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
- *
+ */
 function sync_civicrm_navigationMenu(&$menu) {
   _sync_civix_insert_navigation_menu($menu, NULL, array(
-    'label' => E::ts('The Page'),
-    'name' => 'the_page',
-    'url' => 'civicrm/the-page',
+    'label' => E::ts('Permamed Import'),
+    'name' => 'permamedimport',
+    'url' => 'civicrm/sync/permamedupload',
     'permission' => 'access CiviReport,access CiviContribute',
     'operator' => 'OR',
     'separator' => 0,
   ));
   _sync_civix_navigationMenu($menu);
-} // */
+}

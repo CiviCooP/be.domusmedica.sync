@@ -50,8 +50,34 @@ class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
     }
 
   public function postProcess() {
-    // add processing of the file
+
+      $processor = new CRM_Sync_PermamedProcessor();
+
+      $queue = CRM_Queue_Service::singleton()->create(array(
+          'type' => 'Sql',
+          'name' => 'be.domusmedica.sync.permamedimport',
+          'reset' => TRUE, //do not flush queue upon creation
+      ));
+
+
+      $processor->fillQueue($queue);
+
+      $url = CRM_Utils_System::url('civicrm/sync/permameduploadresult', 'reset=1');;
+      $runner = new CRM_Queue_Runner(array(
+          'title' => ts('Process the imported Permaned Records'), //title fo the queue
+          'queue' => $queue, //the queue object
+          'errorMode'=> CRM_Queue_Runner::ERROR_ABORT, //abort upon error and keep task in queue
+          'onEnd' => array($this, 'onEnd'), //method which is called as soon as the queue is finished
+          'onEndUrl' => $url,
+      ));
+      $runner->runAllViaWeb(); // does not return
+
+
     parent::postProcess();
+  }
+
+  private function onEnd(CRM_Queue_TaskContext $ctx) {
+    CRM_Core_Session::setStatus(E::ts('Import of the permaned file is complete'), '', 'success');
   }
 
 }

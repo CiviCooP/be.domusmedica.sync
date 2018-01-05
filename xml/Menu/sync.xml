@@ -6,4 +6,10 @@
     <title>PermamedUpload</title>
     <access_arguments>access CiviCRM</access_arguments>
   </item>
+  <item>
+    <path>civicrm/sync/permameduploadresult</path>
+    <page_callback>CRM_Sync_Page_PermamedUploadResult</page_callback>
+    <title>PermamedUploadResult</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
