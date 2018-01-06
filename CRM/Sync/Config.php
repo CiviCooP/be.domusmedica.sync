@@ -64,7 +64,7 @@ class CRM_Sync_Config {
         'name_a_b' => "is arts bij",
       ));
     } catch (Exception $ex) {
-      throw new Exception('Oops: RelationShip Type Is lid van groepspraktijk not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+      throw new Exception('Oops: RelationShip Type Is is arts bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
   }
 
