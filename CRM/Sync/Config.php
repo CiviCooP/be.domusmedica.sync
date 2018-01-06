@@ -61,7 +61,7 @@ class CRM_Sync_Config {
     try {
       $this->_isLidGroepsPraktijkRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
         'return' => "id",
-        'name_a_b' => "is lid van groepspraktijk",
+        'name_a_b' => "is arts bij",
       ));
     } catch (Exception $ex) {
       throw new Exception('Oops: RelationShip Type Is lid van groepspraktijk not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
