@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Imports the CVS permamed file into the temporary import table
+ * Process the permaned table with the civicrm_api3
  *
  * @author Klaas Eikelbooml (CiviCooP) <klaas.eikelboom@civicoop.org>
  * @date 4-jan-2018
@@ -59,10 +59,49 @@ class CRM_Sync_PermamedProcessor {
     }
   }
 
+  /**
+   * @param $dao
+   */
   private function processRecord($dao) {
 
-    $context = $errors = array();
+    /* the array errors is used by the processing
+       functions to store errors so they can be
+       examined later. Now all the processing functions skip
+       processing if they find and error.
+       - todo possible make a difference errors and warnings
+         warnings do not skip.
+    */
+    $errors = array();
+    /* context is used to pass technical keys from on
+       processing function to another. At the moment two
+       keys are passed
+       - contact_id  id of the arts
+       - praktijk_id is (id of the connected organization
+    */
+    $context = array();
+
     try {
+
+      /* processing functions have all the same structure
+         - check for errors - if so skip
+         - check if the field that must me updated is in
+           the input - if so skip
+         - look if the object to be created already exists
+           finds its technical id.
+         - create or update the object (using the api and its id)
+         - fill the context if needed
+         - fill the errors
+         - return
+
+         however there are differences how the functions map
+         the import table fields to the api arguments
+
+         1) a specialist functions does the mapping inside the
+            function (such a function is used one time e.g
+            procesPraktijk.
+         2) a generic function does the mapping outside the function
+            (below, example processEmail)
+      */
 
       $this->processCheck($dao, $errors);
       $this->processContact($dao, $errors, $context);
@@ -148,6 +187,10 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
+  /**
+   * @param $dao
+   * @param $errors
+   */
   private function processCheck($dao, &$errors) {
     if (!empty($errors)) {
       return;
@@ -164,6 +207,13 @@ class CRM_Sync_PermamedProcessor {
     }
   }
 
+  /**
+   * @param $dao
+   * @param $errors
+   * @param $context adds contact_id of the found or the inserted contact
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   private function processContact($dao, &$errors, &$context) {
     if (!empty($errors)) {
       return;
@@ -197,6 +247,13 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
+  /**
+   * @param $dao
+   * @param $errors
+   * @param $context
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   private function processPraktijk($dao, &$errors, &$context) {
     if (!empty($errors)) {
       return;
@@ -246,6 +303,12 @@ class CRM_Sync_PermamedProcessor {
     }
   }
 
+  /**
+   * @param $errors
+   * @param $apiParams
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   private function processAddress(&$errors, $apiParams) {
     if (!empty($errors)) {
       return;
@@ -271,6 +334,12 @@ class CRM_Sync_PermamedProcessor {
     }
   }
 
+  /**
+   * @param $errors
+   * @param $apiParams
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   private function processEmail(&$errors, $apiParams)
   {
     if (!empty($errors)) {
@@ -301,6 +370,12 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
+  /**
+   * @param $errors
+   * @param $apiParams
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   private function processPhone(&$errors, $apiParams)
   {
     if (!empty($errors)) {
@@ -333,6 +408,5 @@ class CRM_Sync_PermamedProcessor {
     }
 
   }
-
 
 }
