@@ -236,6 +236,7 @@ class CRM_Sync_PermamedProcessor {
     $apiParams['first_name'] = $dao->voornaam;
     $apiParams['last_name'] = $dao->naam;
     $apiParams['custom_' . $config->getBankrekeningCustomFieldId()] = $dao->rekeningnummer_prive;
+    $apiParams['custom_' . $config->getActiefvoorWachtdienstCustomFieldId()] = $dao->actief_voor_wachtdienst;
 
     $result = civicrm_api3('Contact', 'create', $apiParams);
 
