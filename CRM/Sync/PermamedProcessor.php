@@ -220,6 +220,7 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $config = CRM_Sync_Config::singleton();
+    $translator = new CRM_Sync_GenderTranslator();
 
     $contact_id = CRM_Core_DAO::singleValueQuery("SELECT id FROM civicrm_contact WHERE external_identifier = %1", array(
       1 => array($dao->riziv, 'Integer'),
@@ -235,6 +236,7 @@ class CRM_Sync_PermamedProcessor {
     $apiParams['external_identifier'] = $dao->riziv;
     $apiParams['first_name'] = $dao->voornaam;
     $apiParams['last_name'] = $dao->naam;
+    $apiParams['gender_id'] = $translator->translate($dao->geslacht);
     $apiParams['custom_' . $config->getBankrekeningCustomFieldId()] = $dao->rekeningnummer_prive;
     $apiParams['custom_' . $config->getActiefvoorWachtdienstCustomFieldId()] = $dao->actief_voor_wachtdienst;
     $apiParams['custom_' . $config->getEmdCustomFieldId()] = $dao->emd;
