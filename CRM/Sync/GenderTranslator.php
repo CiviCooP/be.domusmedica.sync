@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Translates the gender from the Permamed Import to the Civi Standard.
  *
@@ -15,14 +16,17 @@ class CRM_Sync_GenderTranslator {
   public function __construct() {
   }
 
-  public function translate($permamedGender){
-    if(empty($permamedGender)){
-      return false;
-    } elseif ($permamedGender=='vrouwelijk'){
+  public function translate($permamedGender) {
+    if (empty($permamedGender)) {
+      return FALSE;
+    }
+    elseif ($permamedGender == 'vrouwelijk') {
       return 1;
-    } elseif ($permamedGender=='mannelijk') {
+    }
+    elseif ($permamedGender == 'mannelijk') {
       return 2;
-    } else {
+    }
+    else {
       throw Exception("Unknown gender in import $permamedGender");
     }
 
