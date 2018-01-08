@@ -232,7 +232,13 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $apiParams['contact_type'] = 'Individual';
-    $apiParams['contact_sub_type'] = $dao->haio?'HAIO':'Arts';
+    if($dao->haio)
+    {
+      $apiParams['contact_sub_type'] = 'HAIO';
+      $apiParams['custom_' . $config->getOpleidingsjaarCustomFieldId()] = $dao->opleidingsjaar;
+    } else {
+      $apiParams['contact_sub_type'] = 'HAIO';
+    }
     $apiParams['external_identifier'] = $dao->riziv;
     $apiParams['first_name'] = $dao->voornaam;
     $apiParams['last_name'] = $dao->naam;

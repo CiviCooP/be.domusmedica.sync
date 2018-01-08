@@ -63,6 +63,7 @@ class CRM_Sync_PermamedImporter
           'fax_prive' => 23,
           'geslacht' => 24,
           'haio' => 32,
+          'opleidingsjaar' => 33,
           'praktijk_opleider' => 34,
           'actief_voor_wachtdienst' => 36,
           'emd' => 39,

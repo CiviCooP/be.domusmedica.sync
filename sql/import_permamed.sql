@@ -26,6 +26,7 @@ CREATE TABLE `import_permamed` (
   `fax_prive`               VARCHAR(32),
   `geslacht`                VARCHAR(10),
   `haio`                    SMALLINT    NOT NULL DEFAULT 0,
+  `opleidingsjaar`          smallint,
   `praktijk_opleider`       VARCHAR(100),
   `actief_voor_wachtdienst` SMALLINT    NOT NULL DEFAULT 0,
   `emd`                     VARCHAR(20),

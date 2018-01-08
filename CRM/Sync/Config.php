@@ -22,6 +22,8 @@ class CRM_Sync_Config {
 
   private $_isLidGroepsPraktijkRelationShipId;
 
+  private $_opleidingsJaarCustomFieldId;
+
   /**
    * CRM_Sync_Config constructor.
    */
@@ -66,6 +68,15 @@ class CRM_Sync_Config {
     } catch (Exception $ex) {
       throw new Exception('Oops: RelationShip Type Is is arts bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
+    try {
+      $this->_opleidingsJaarCustomFieldId = civicrm_api3('CustomField', 'getvalue', array(
+        'return' => "id",
+        'name' => "Opleidingsjaar",
+      ));
+    } catch (Exception $ex) {
+      throw new Exception('Oops: Custom Field Opleidingsjaar not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+    }
+
   }
 
   /**
@@ -95,6 +106,22 @@ class CRM_Sync_Config {
   public function getEmdCustomFieldId() {
     return $this->_emdCustomFieldId;
   }
+
+  /**
+   * @return array
+   */
+  public function getisLidGroepsPraktijkRelationShipId() {
+    return $this->_isLidGroepsPraktijkRelationShipId;
+  }
+
+  /**
+   * @param array $isLidGroepsPraktijkRelationShipId
+   */
+  public function setIsLidGroepsPraktijkRelationShipId($isLidGroepsPraktijkRelationShipId) {
+    $this->_isLidGroepsPraktijkRelationShipId = $isLidGroepsPraktijkRelationShipId;
+  }
+
+
 
 
   /**
