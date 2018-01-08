@@ -201,10 +201,6 @@ class CRM_Sync_PermamedProcessor {
       return;
     }
 
-    if ($dao->haio) {
-      $errors[] = 'Haios are not processed';
-      return;
-    }
   }
 
   /**
@@ -232,7 +228,7 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $apiParams['contact_type'] = 'Individual';
-    $apiParams['contact_sub_type'] = 'Arts';
+    $apiParams['contact_sub_type'] = $dao->haio?'HAIO':'Arts';
     $apiParams['external_identifier'] = $dao->riziv;
     $apiParams['first_name'] = $dao->voornaam;
     $apiParams['last_name'] = $dao->naam;
