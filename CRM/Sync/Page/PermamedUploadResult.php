@@ -5,10 +5,18 @@ class CRM_Sync_Page_PermamedUploadResult extends CRM_Core_Page {
 
   private function failures(){
     $failures = array();
-    $dao = CRM_Core_DAO::executeQuery("SELECT * FROM import_permamed WHERE processed = 'F'");
+    $dao = CRM_Core_DAO::executeQuery("
+       SELECT imp.id, imp.naam, imp.message ,c.id contact_id FROM import_permamed imp
+       left join civicrm_contact c on (c.external_identifier=riziv)
+       WHERE processed = 'F'");
     while($dao->fetch()){
+
+
+
       $row = array(
         'id' => $dao->id,
+        'contact_id' => $dao->contact_id,
+        'naam' => $dao->naam,
         'message' => $dao ->message,
       );
       $failures[]=$row;

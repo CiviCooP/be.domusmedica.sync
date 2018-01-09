@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS `import_permamed`;
-CREATE TABLE `import_permamed` (
+CREATE TABLE `import_permamed`  (
   `id`                      INT                  AUTO_INCREMENT,
   `riziv`                   VARCHAR(14) NOT NULL,
   `naam`                    VARCHAR(64),
@@ -26,11 +26,11 @@ CREATE TABLE `import_permamed` (
   `fax_prive`               VARCHAR(32),
   `geslacht`                VARCHAR(10),
   `haio`                    SMALLINT    NOT NULL DEFAULT 0,
-  `opleidingsjaar`          smallint,
+  `opleidingsjaar`          varchar(1),
   `praktijk_opleider`       VARCHAR(100),
   `actief_voor_wachtdienst` SMALLINT    NOT NULL DEFAULT 0,
   `emd`                     VARCHAR(20),
   `processed`               VARCHAR(1)  NOT NULL DEFAULT 'N',
   `message`                 TEXT                 DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) COLLATE `utf8_unicode_ci`;

@@ -11,22 +11,24 @@
 
 class CRM_Sync_PraktijkMatcher {
 
+  private $_context;
+
   /**
    * CRM_Sync_PraktijkMatcher constructor.
    */
-  public function __construct() {
+  public function __construct($context) {
+    $this->_context = $context;
   }
 
 
-  public function match($contact_id, $street, $city) {
-    $config = CRM_Sync_Config::singleton();
+  public function match($street, $city) {
 
     $praktijk_id = CRM_Core_DAO::singleValueQuery(
       "SELECT contact_id_b FROM civicrm_relationship rel
        JOIN   civicrm_contact c ON (rel.contact_id_b = c.id AND c.is_deleted=0)
        WHERE relationship_type_id = %2 AND contact_id_a =%1", array(
-        1 => array($contact_id, 'Integer'),
-        2 => array($config->getLidGroepsPraktijkRelationShipId(), 'Integer'),
+        1 => array($this->_context['contact_id'], 'Integer'),
+        2 => array($this->_context['relationship_type_id'], 'Integer'),
       )
     );
 

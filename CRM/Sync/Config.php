@@ -20,7 +20,9 @@ class CRM_Sync_Config {
 
   private $_emdCustomFieldId;
 
-  private $_isLidGroepsPraktijkRelationShipId;
+  private $_artsBijRelationShipId;
+
+  private $_haioVanRelationShipId;
 
   private $_opleidingsJaarCustomFieldId;
 
@@ -61,12 +63,20 @@ class CRM_Sync_Config {
       throw new Exception('Oops: Custom Field Medisch_pakket2 not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
-      $this->_isLidGroepsPraktijkRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+      $this->_artsBijRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
         'return' => "id",
         'name_a_b' => "is arts bij",
       ));
     } catch (Exception $ex) {
       throw new Exception('Oops: RelationShip Type Is is arts bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+    }
+    try {
+      $this->_haioVanRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+        'return' => "id",
+        'name_a_b' => "is Haio van",
+      ));
+    } catch (Exception $ex) {
+      throw new Exception('Oops: RelationShip Type Is is Haio van bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
       $this->_opleidingsJaarCustomFieldId = civicrm_api3('CustomField', 'getvalue', array(
@@ -84,6 +94,20 @@ class CRM_Sync_Config {
    */
   public function getBankrekeningCustomFieldId() {
     return $this->_bankrekeningCustomFieldId;
+  }
+
+  /**
+   * @return array
+   */
+  public function getArtsBijRelationShipId() {
+    return $this->_artsBijRelationShipId;
+  }
+
+  /**
+   * @return array
+   */
+  public function getHaioVanRelationShipId() {
+    return $this->_haioVanRelationShipId;
   }
 
   /**
@@ -106,31 +130,6 @@ class CRM_Sync_Config {
   public function getEmdCustomFieldId() {
     return $this->_emdCustomFieldId;
   }
-
-  /**
-   * @return array
-   */
-  public function getisLidGroepsPraktijkRelationShipId() {
-    return $this->_isLidGroepsPraktijkRelationShipId;
-  }
-
-  /**
-   * @param array $isLidGroepsPraktijkRelationShipId
-   */
-  public function setIsLidGroepsPraktijkRelationShipId($isLidGroepsPraktijkRelationShipId) {
-    $this->_isLidGroepsPraktijkRelationShipId = $isLidGroepsPraktijkRelationShipId;
-  }
-
-
-
-
-  /**
-   * @return mixed
-   */
-  public function getLidGroepsPraktijkRelationShipId() {
-    return $this->_isLidGroepsPraktijkRelationShipId;
-  }
-
 
 
 
