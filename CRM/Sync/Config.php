@@ -24,6 +24,8 @@ class CRM_Sync_Config {
 
   private $_haioVanRelationShipId;
 
+  private $_leertPraktijkBijRelationShipId;
+
   private $_opleidingsJaarCustomFieldId;
 
   /**
@@ -79,6 +81,14 @@ class CRM_Sync_Config {
       throw new Exception('Oops: RelationShip Type Is is Haio van bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
+      $this->_leertPraktijkBijRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+        'return' => "id",
+        'name_a_b' => "leert de praktijk bij",
+      ));
+    } catch (Exception $ex) {
+      throw new Exception('Oops: RelationShip Type Is is Haio van bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+    }
+    try {
       $this->_opleidingsJaarCustomFieldId = civicrm_api3('CustomField', 'getvalue', array(
         'return' => "id",
         'name' => "Opleidingsjaar",
@@ -123,6 +133,15 @@ class CRM_Sync_Config {
   public function getActiefvoorWachtdienstCustomFieldId() {
     return $this->_actiefvoorWachtdienstCustomFieldId;
   }
+
+  /**
+   * @return array
+   */
+  public function getLeertPraktijkBijRelationShipId() {
+    return $this->_leertPraktijkBijRelationShipId;
+  }
+
+
 
   /**
    * @return mixed

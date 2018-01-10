@@ -111,7 +111,7 @@ class CRM_Sync_PermamedProcessor {
         'street_address' => $dao->straat_prive . ' ' . $dao->huisnummer_prive,
         'city' => $dao->stad_prive,
         'postal_code' => $dao->postcode_prive,
-      ));
+      ),$context);
       $this->processEmail($errors, array(
         'contact_id' => $context['contact_id'],
         'location_type_id' => 'Prive',
@@ -143,7 +143,7 @@ class CRM_Sync_PermamedProcessor {
         'street_address' => $dao->straat . ' ' . $dao->huisnummer,
         'city' => $dao->stad,
         'postal_code' => $dao->postcode,
-      ));
+      ),$context);
       $this->processEmail($errors, array(
         'contact_id' => $context['praktijk_id'],
         'location_type_id' => 'Praktijkadres',
@@ -167,7 +167,8 @@ class CRM_Sync_PermamedProcessor {
         'phone_type_id' => 'Fax',
         'phone' => $dao->fax,
       ));
-      $this->processChildAddress($errors, $context);
+      $this->processChildAddress($dao,$errors, $context);
+      $this->processPraktijkOpleider($dao,$errors,$context);
     } catch (Exception $ex) {
       $errors[] = $ex;
     }
@@ -236,7 +237,7 @@ class CRM_Sync_PermamedProcessor {
     {
       $apiParams['contact_sub_type'] = 'HAIO';
       $apiParams['custom_' . $config->getOpleidingsjaarCustomFieldId()] = $dao->opleidingsjaar;
-      $context['relationship_type_id'] = $config->getHaioVanRelationShipId() ;
+      $context['relationship_type_id'] = $config->getLeertPraktijkBijRelationShipId() ;
     } else {
       $apiParams['contact_sub_type'] = 'Arts';
       $context['relationship_type_id'] = $config->getArtsBijRelationShipId() ;
@@ -272,9 +273,9 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $config = CRM_Sync_Config::singleton();
-    $matcher = new CRM_Sync_PraktijkMatcher($context);
+    $matcher = new CRM_Sync_Matcher($context);
 
-    $praktijk_id = $matcher->match($dao->straat.' '.$dao->huisnummer,$dao->stad);
+    $praktijk_id = $matcher->matchPraktijk($dao->straat.' '.$dao->huisnummer,$dao->stad);
 
     $apiParams = array();
     if ($praktijk_id) {
@@ -307,6 +308,7 @@ class CRM_Sync_PermamedProcessor {
   }
 
   private function processRelationship(&$errors,$context){
+
     if (!empty($errors)) {
       return;
     }
@@ -336,6 +338,51 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
+  private function processPraktijkOpleider($dao,&$errors,$context){
+
+    if (!empty($errors)) {
+      return;
+    }
+
+    if($dao->haio=0){
+      return;
+    }
+
+    $matcher = new CRM_Sync_Matcher($context);
+
+    $praktijkopleider_id = $matcher->matchPraktijkOpleider($dao->praktijk_opleider);
+
+    if(!$praktijkopleider_id){
+      return;
+    }
+
+    $config = CRM_Sync_Config::singleton();
+
+    $relationship_id = CRM_Core_DAO::singleValueQuery("
+         SELECT id FROM civicrm_relationship
+         WHERE contact_id_a=%1 and contact_id_b=%2 and relationship_type_id=%3 ", array(
+      1 => array($context['contact_id'],'Integer'),
+      2 => array($praktijkopleider_id,'Integer'),
+      3 => array($config->getHaioVanRelationShipId(),'Integer'),
+    ));
+
+    if($relationship_id){
+      return;
+    }
+
+    $result = civicrm_api3('Relationship','create',array(
+      'contact_id_a' => $context['contact_id'],
+      'contact_id_b' => $praktijkopleider_id,
+      'relationship_type_id' => $config->getHaioVanRelationShipId(),
+    ));
+
+
+    if ($result['is_error']) {
+      $errors[] = $result['error_message'];
+    }
+
+  }
+
 
   /**
    * @param $errors
@@ -343,7 +390,7 @@ class CRM_Sync_PermamedProcessor {
    *
    * @throws \CiviCRM_API3_Exception
    */
-  private function processAddress(&$errors, $apiParams) {
+  private function processAddress(&$errors, $apiParams,&$context) {
     if (!empty($errors)) {
       return;
     }
@@ -363,6 +410,8 @@ class CRM_Sync_PermamedProcessor {
 
     $result = civicrm_api3('Address', 'create', $apiParams);
 
+    $context['address_id'] = $result['id'];
+
     if ($result['is_error']) {
       $errors[] = $result['error_message'];
     }
@@ -374,7 +423,7 @@ class CRM_Sync_PermamedProcessor {
    *
    * @throws \CiviCRM_API3_Exception
    */
-  private function processChildAddress(&$errors, $context) {
+  private function processChildAddress($dao,&$errors, $context) {
     if (!empty($errors)) {
       return;
     }
@@ -387,32 +436,25 @@ class CRM_Sync_PermamedProcessor {
       )
     );
 
-
     if(!$master_id)
     {
       return;
     }
 
-    $address_id = CRM_Core_DAO::singleValueQuery(
-      "select adr.id from civicrm_address adr
-       JOIN civicrm_location_type loc ON (loc.id = adr.location_type_id)
-       where contact_id = %1 and loc.name='Praktijkadres'",array(
-         1 =>array($context['contact_id'],'Integer'),
-      )
-    );
+    $this->processAddress($errors, array(
+      'contact_id' => $context['contact_id'],
+      'location_type_id' => 'Praktijkadres',
+      'street_address' => $dao->straat . ' ' . $dao->huisnummer,
+      'city' => $dao->stad,
+      'postal_code' => $dao->postcode,
+    ),$context);
 
-    $apiParams['contact_id'] = $context['contact_id'];
-    $apiParams['master_id'] = $master_id;
-    $apiParams['location_type_id'] = 'Praktijkadres';
-    if( $address_id){
-      $apiParams['id'] = $address_id;
-    }
+    // make this a shared address
+    // do not use the api because it creates an employee relationship
+    // see CRM-11044
 
-    $result = civicrm_api3('Address', 'create', $apiParams);
+    CRM_Core_DAO_Address::setFieldValue('CRM_Core_DAO_Address',$context['address_id'],'master_id',$master_id);
 
-    if ($result['is_error']) {
-      $errors[] = $result['error_message'];
-    }
   }
 
   /**

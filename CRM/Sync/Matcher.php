@@ -9,7 +9,7 @@
  * @license AGPL-3.0
  */
 
-class CRM_Sync_PraktijkMatcher {
+class CRM_Sync_Matcher {
 
   private $_context;
 
@@ -21,7 +21,7 @@ class CRM_Sync_PraktijkMatcher {
   }
 
 
-  public function match($street, $city) {
+  public function matchPraktijk($street, $city) {
 
     $praktijk_id = CRM_Core_DAO::singleValueQuery(
       "SELECT contact_id_b FROM civicrm_relationship rel
@@ -37,7 +37,7 @@ class CRM_Sync_PraktijkMatcher {
       SELECT c.id FROM civicrm_contact c
       JOIN civicrm_address adr ON (adr.contact_id = c.id)
       JOIN civicrm_location_type loc ON (loc.id = adr.location_type_id AND loc.name='Praktijkadres')
-      WHERE adr.street_address = %1 AND adr.city = %2 and c.is_deleted=0
+      WHERE adr.street_address = %1 AND adr.city = %2 and c.is_deleted=0 and c.contact_type='Organization'
       ", array(
           1 => array($street, 'String'),
           2 => array($city, 'String'),
@@ -46,6 +46,19 @@ class CRM_Sync_PraktijkMatcher {
     }
 
     return $praktijk_id;
+  }
 
+  public function matchPraktijkOpleider($praktijkopleider){
+
+     if(empty($praktijkopleider)){
+       return false;
+     }
+
+     return CRM_Core_DAO::singleValueQuery("
+     select id from civicrm_contact
+     where  concat(last_name,', ',first_name) = %1 and contact_type='Individual'",array(
+       1 => array($praktijkopleider,'String'),
+       )
+       );
   }
 }
