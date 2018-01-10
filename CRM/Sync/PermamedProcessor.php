@@ -167,6 +167,11 @@ class CRM_Sync_PermamedProcessor {
         'phone_type_id' => 'Fax',
         'phone' => $dao->fax,
       ));
+      $this->processWebsite($errors, array(
+        'contact_id' => $context['praktijk_id'],
+        'website_type_id' => 'Work',
+        'url' => $dao->website,
+      ));
       $this->processChildAddress($dao,$errors, $context);
       $this->processPraktijkOpleider($dao,$errors,$context);
     } catch (Exception $ex) {
@@ -525,6 +530,44 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $result = civicrm_api3('Phone', 'create', $apiParams);
+
+    if ($result['is_error']) {
+      $errors[] = $result['error_message'];
+    }
+
+  }
+
+
+  /**
+   * @param $errors
+   * @param $apiParams
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  private function processWebsite(&$errors, $apiParams)
+  {
+    if (!empty($errors)) {
+      return;
+    }
+
+    if (empty($apiParams['url'])) {
+      return;
+    }
+
+    $phone_id = CRM_Core_DAO::singleValueQuery("
+      SELECT web.id FROM civicrm_website web
+      JOIN civicrm_option_value ov ON (ov.value = website_type_id)
+      JOIN civicrm_option_group g ON (ov.option_group_id = g.id and g.name='website_type')
+      WHERE web.contact_id = %1 AND ov.name=%2", array(
+      1 => array($apiParams['contact_id'], 'Integer'),
+      2 => array($apiParams['website_type_id'] , 'String')
+    ));
+
+    if ($phone_id) {
+      $apiParams['id'] = $phone_id;
+    }
+
+    $result = civicrm_api3('Website', 'create', $apiParams);
 
     if ($result['is_error']) {
       $errors[] = $result['error_message'];
