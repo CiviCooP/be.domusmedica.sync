@@ -28,6 +28,8 @@ class CRM_Sync_Config {
 
   private $_opleidingsJaarCustomFieldId;
 
+  private $_permamedGroupId;
+
   /**
    * CRM_Sync_Config constructor.
    */
@@ -96,6 +98,14 @@ class CRM_Sync_Config {
     } catch (Exception $ex) {
       throw new Exception('Oops: Custom Field Opleidingsjaar not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
+    try {
+      $this->_permamedGroupId = civicrm_api3('Group', 'getvalue', array(
+        'return' => "id",
+        'title' => "Permamed",
+      ));
+    } catch (Exception $ex) {
+      throw new Exception('Oops: Group Permamed not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+    }
 
   }
 
@@ -150,6 +160,12 @@ class CRM_Sync_Config {
     return $this->_emdCustomFieldId;
   }
 
+  /**
+   * @return array
+   */
+  public function getPermamedGroupId() {
+    return $this->_permamedGroupId;
+  }
 
 
   /**

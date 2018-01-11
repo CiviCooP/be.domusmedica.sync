@@ -135,6 +135,9 @@ class CRM_Sync_PermamedProcessor {
         'phone_type_id' => 'Fax',
         'phone' => $dao->fax_prive,
       ));
+      $this->addGroup($errors,array(
+        'contact_id' => $context['contact_id'],
+      ));
       $this->processPraktijk($dao,$errors,$context);
       $this->processRelationship($errors,$context);
       $this->processAddress($errors, array(
@@ -174,6 +177,9 @@ class CRM_Sync_PermamedProcessor {
       ));
       $this->processChildAddress($dao,$errors, $context);
       $this->processPraktijkOpleider($dao,$errors,$context);
+      $this->addGroup($errors,array(
+        'contact_id' => $context['praktijk_id'],
+      ));
     } catch (Exception $ex) {
       $errors[] = $ex;
     }
@@ -530,6 +536,23 @@ class CRM_Sync_PermamedProcessor {
     }
 
     $result = civicrm_api3('Phone', 'create', $apiParams);
+
+    if ($result['is_error']) {
+      $errors[] = $result['error_message'];
+    }
+
+  }
+
+  private function addGroup(&$errors,$apiParams){
+
+    if (!empty($errors)) {
+      return;
+    }
+
+    $config = CRM_Sync_Config::singleton();
+    $apiParams['group_id'] = $config->getPermamedGroupId();
+
+    $result = civicrm_api3('GroupContact', 'create', $apiParams);
 
     if ($result['is_error']) {
       $errors[] = $result['error_message'];
