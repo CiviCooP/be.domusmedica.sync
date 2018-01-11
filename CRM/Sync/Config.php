@@ -171,7 +171,7 @@ class CRM_Sync_Config {
   /**
    * Instantiates the singleton
    *
-   * @return Sync_Config
+   * @return CRM_Sync_Config
    * @access public
    * @static
    */
