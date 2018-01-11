@@ -358,7 +358,7 @@ class CRM_Sync_PermamedProcessor {
       return;
     }
 
-    if($dao->haio=0){
+    if(!$dao->haio){
       return;
     }
 
