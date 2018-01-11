@@ -179,7 +179,7 @@ class CRM_Sync_PermamedProcessor {
         'url' => $dao->website,
       ));
       $this->processChildAddress($dao,$errors, $context);
-      $this->processPraktijkOpleider($dao,$errors,$context);
+      $this->processPraktijkOpleider($dao,$errors,$warnings,$context);
       $this->addGroup($errors,array(
         'contact_id' => $context['praktijk_id'],
       ));
@@ -352,7 +352,7 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
-  private function processPraktijkOpleider($dao,&$errors,$context){
+  private function processPraktijkOpleider($dao,&$errors,&$warnings,$context){
 
     if (!empty($errors)) {
       return;
@@ -364,9 +364,10 @@ class CRM_Sync_PermamedProcessor {
 
     $matcher = new CRM_Sync_Matcher($context);
 
-    $praktijkopleider_id = $matcher->matchPraktijkOpleider($dao->praktijk_opleider);
+    $praktijkopleider_id = $matcher->matchPraktijkOpleider($dao->praktijk_opleider,$warnings);
 
     if(!$praktijkopleider_id){
+      $warnings[] = 'Praktijkopleider '.$dao->praktijk_opleider.' kon niet gevonden worden';
       return;
     }
 

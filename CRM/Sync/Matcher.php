@@ -48,17 +48,28 @@ class CRM_Sync_Matcher {
     return $praktijk_id;
   }
 
-  public function matchPraktijkOpleider($praktijkopleider){
+  public function matchPraktijkOpleider($praktijkopleider,&$warnings) {
 
-     if(empty($praktijkopleider)){
-       return false;
-     }
+    if (empty($praktijkopleider)) {
+      return FALSE;
+    }
 
-     return CRM_Core_DAO::singleValueQuery("
-     select id from civicrm_contact
-     where  concat(last_name,', ',first_name) = %1 and contact_type='Individual'",array(
-       1 => array($praktijkopleider,'String'),
-       )
-       );
+    $dao = CRM_Core_DAO::executeQuery("
+     SELECT id FROM civicrm_contact
+     WHERE  concat(last_name,', ',first_name) = %1 AND contact_type='Individual'", array(
+        1 => array($praktijkopleider, 'String'),
+      )
+    );
+
+    $dao->fetch();
+
+    if($dao->N==0){
+      return false;
+    } else {
+      if($dao->N>1){
+        $warnings[] = 'meer mogenlijkheden gevonden voor praktijkopleider '.$praktijkopleider. ' een willekeurige gekozen';
+      }
+      return $dao->id;
+    }
   }
 }
