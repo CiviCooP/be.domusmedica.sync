@@ -68,10 +68,13 @@ class CRM_Sync_PermamedProcessor {
        functions to store errors so they can be
        examined later. Now all the processing functions skip
        processing if they find and error.
-       - todo possible make a difference errors and warnings
-         warnings do not skip.
     */
     $errors = array();
+    /* warnings function the same way as errors, except that
+       generating a warning does not stop the processing
+       (however it is reported back
+    */
+    $warnings = array();
     /* context is used to pass technical keys from on
        processing function to another. At the moment two
        keys are passed
@@ -183,14 +186,14 @@ class CRM_Sync_PermamedProcessor {
     } catch (Exception $ex) {
       $errors[] = $ex;
     }
-    if (empty($errors)) {
+    if (empty($errors+$warnings)) {
       CRM_Core_DAO::executeQuery('UPDATE import_permamed SET processed = %2 WHERE id=%1', array(
         1 => array($dao->id, 'Integer'),
         2 => array('S', 'String'),
       ));
     }
     else {
-      $message = implode($errors, ';');
+      $message = implode($errors+$warnings, ';');
       CRM_Core_DAO::executeQuery('UPDATE import_permamed SET processed = %2, message=%3 WHERE id=%1', array(
         1 => array($dao->id, 'Integer'),
         2 => array('F', 'String'),
@@ -220,7 +223,7 @@ class CRM_Sync_PermamedProcessor {
   /**
    * @param $dao
    * @param $errors
-   * @param $context adds contact_id of the found or the inserted contact
+   * @param $context
    *
    * @throws \CiviCRM_API3_Exception
    */
