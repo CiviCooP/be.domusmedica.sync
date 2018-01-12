@@ -251,7 +251,7 @@ class CRM_Sync_PermamedProcessor {
     {
       $apiParams['contact_sub_type'] = 'HAIO';
       $apiParams['custom_' . $config->getOpleidingsjaarCustomFieldId()] = $dao->opleidingsjaar;
-      $context['relationship_type_id'] = $config->getLeertPraktijkBijRelationShipId() ;
+      $context['relationship_type_id'] = $config->getVolgtopleidingInDePrakijkRelationShipId() ;
     } else {
       $apiParams['contact_sub_type'] = 'Arts';
       $context['relationship_type_id'] = $config->getArtsBijRelationShipId() ;
@@ -378,7 +378,7 @@ class CRM_Sync_PermamedProcessor {
          WHERE contact_id_a=%1 and contact_id_b=%2 and relationship_type_id=%3 ", array(
       1 => array($context['contact_id'],'Integer'),
       2 => array($praktijkopleider_id,'Integer'),
-      3 => array($config->getHaioVanRelationShipId(),'Integer'),
+      3 => array($config->getIsHaioVanRelationShipId(),'Integer'),
     ));
 
     if($relationship_id){
@@ -388,7 +388,7 @@ class CRM_Sync_PermamedProcessor {
     $result = civicrm_api3('Relationship','create',array(
       'contact_id_a' => $context['contact_id'],
       'contact_id_b' => $praktijkopleider_id,
-      'relationship_type_id' => $config->getHaioVanRelationShipId(),
+      'relationship_type_id' => $config->getIsHaioVanRelationShipId(),
     ));
 
 

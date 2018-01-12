@@ -22,9 +22,9 @@ class CRM_Sync_Config {
 
   private $_artsBijRelationShipId;
 
-  private $_haioVanRelationShipId;
+  private $_volgtopleidingInDePrakijkRelationShipId;
 
-  private $_leertPraktijkBijRelationShipId;
+  private $_isHaioVanRelationShipId;
 
   private $_opleidingsJaarCustomFieldId;
 
@@ -75,17 +75,17 @@ class CRM_Sync_Config {
       throw new Exception('Oops: RelationShip Type Is is arts bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
-      $this->_haioVanRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+      $this->_volgtopleidingInDePrakijkRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
         'return' => "id",
-        'name_a_b' => "is Haio van",
+        'label_a_b' => "volgt opleiding in de praktijk",
       ));
     } catch (Exception $ex) {
-      throw new Exception('Oops: RelationShip Type Is is Haio van bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+      throw new Exception('Oops: RelationShip Type Is is volgt opleiding in de praktijk not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
-      $this->_leertPraktijkBijRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
+      $this->_isHaioVanRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
         'return' => "id",
-        'name_a_b' => "leert de praktijk bij",
+        'name_a_b' => "is Haio van",
       ));
     } catch (Exception $ex) {
       throw new Exception('Oops: RelationShip Type Is is Haio van bij not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
@@ -126,8 +126,8 @@ class CRM_Sync_Config {
   /**
    * @return array
    */
-  public function getHaioVanRelationShipId() {
-    return $this->_haioVanRelationShipId;
+  public function getVolgtopleidingInDePrakijkRelationShipId() {
+    return $this->_volgtopleidingInDePrakijkRelationShipId;
   }
 
   /**
@@ -147,8 +147,8 @@ class CRM_Sync_Config {
   /**
    * @return array
    */
-  public function getLeertPraktijkBijRelationShipId() {
-    return $this->_leertPraktijkBijRelationShipId;
+  public function getIsHaioVanRelationShipId() {
+    return $this->_isHaioVanRelationShipId;
   }
 
 
