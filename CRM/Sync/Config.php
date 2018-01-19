@@ -53,18 +53,18 @@ class CRM_Sync_Config {
     try {
       $this->_actiefvoorWachtdienstCustomFieldId = civicrm_api3('CustomField', 'getvalue', array(
         'return' => "id",
-        'name' => "Vrijgesteld_van_wacht2",
+        'name' => "vrijgesteld_van_wacht",
       ));
     } catch (Exception $ex) {
-      throw new Exception('Oops: Custom Field Vrijgesteld_van_wacht2 not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+      throw new Exception('Oops: Custom Field vrijgesteld_van_wacht not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
       $this->_emdCustomFieldId = civicrm_api3('CustomField', 'getvalue', array(
         'return' => "id",
-        'name' => "Medisch_pakket2",
+        'name' => "medisch_pakket",
       ));
     } catch (Exception $ex) {
-      throw new Exception('Oops: Custom Field Medisch_pakket2 not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
+      throw new Exception('Oops: Custom Field medisch_pakket not found in configuration (File ' . __FILE__ . ' on line ' . __LINE__ . ')');
     }
     try {
       $this->_artsBijRelationShipId = civicrm_api3('RelationshipType', 'getvalue', array(
