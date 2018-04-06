@@ -143,7 +143,6 @@ function sync_civicrm_navigationMenu(&$menu) {
   _sync_civix_insert_navigation_menu($menu, NULL, array(
     'label' => E::ts('Kringen'),
     'name' => 'kringen',
- //   'url' => 'civicrm/sync/permamedupload',
     'permission' => 'access CiviReport,access CiviContribute',
     'operator' => 'OR',
     'separator' => 0,
