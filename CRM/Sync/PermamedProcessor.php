@@ -298,14 +298,20 @@ class CRM_Sync_PermamedProcessor {
 
     if(empty($dao->praktijknaam))
     {
-      $praktijknaam = 'Huisartsenpraktijk '.$dao->naam;
+      if(empty($praktijk_id)) {
+        $praktijknaam = 'Huisartsenpraktijk ' . $dao->naam;
+        $apiParams['organization_name'] = $praktijknaam;
+      } else {
+        // do not touch it.
+      }
     } else {
       $praktijknaam = $dao->praktijknaam;
+      $apiParams['organization_name'] = $praktijknaam;
     }
 
     $apiParams['contact_type'] = 'Organization';
     $apiParams['contact_sub_type'] = 'Praktijk';
-    $apiParams['organization_name'] = $praktijknaam;
+
     $apiParams['custom_' . $config->getBankrekeningCustomFieldId()] = $dao->rekeningnummer_prive;
 
     $result = civicrm_api3('Contact', 'create', $apiParams);
