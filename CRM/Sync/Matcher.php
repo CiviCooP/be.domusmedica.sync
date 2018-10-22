@@ -1,6 +1,6 @@
 <?php
 /**
- * Identfies a praktijk
+ * Identifies a praktijk
  * 1) relationship fields
  * 2) address fields
  *
