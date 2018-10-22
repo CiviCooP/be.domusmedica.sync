@@ -10,6 +10,10 @@
 use CRM_Sync_ExtensionUtil as E;
 
 class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
+
+  /**
+   *
+   */
   public function buildQuickForm()
   {
 
@@ -39,7 +43,10 @@ class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
       parent::buildQuickForm();
   }
 
-    public function preProcess()
+  /**
+   *
+   */
+  public function preProcess()
     {
         if (isset($this->_submitFiles['uploadFile'])) {
             $uploadFile = $this->_submitFiles['uploadFile'];
@@ -49,6 +56,9 @@ class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
         }
     }
 
+  /**
+   *
+   */
   public function postProcess() {
 
       $processor = new CRM_Sync_PermamedProcessor();
@@ -76,6 +86,9 @@ class CRM_Sync_Form_PermamedUpload extends CRM_Core_Form {
     parent::postProcess();
   }
 
+  /**
+   * @param \CRM_Queue_TaskContext $ctx
+   */
   private function onEnd(CRM_Queue_TaskContext $ctx) {
     CRM_Core_Session::setStatus(E::ts('Import of the permaned file is complete'), '', 'success');
   }

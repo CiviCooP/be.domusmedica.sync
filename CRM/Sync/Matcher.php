@@ -21,6 +21,12 @@ class CRM_Sync_Matcher {
   }
 
 
+  /**
+   * @param $street
+   * @param $city
+   *
+   * @return null|string
+   */
   public function matchPraktijk($street, $city) {
 
     $praktijk_id = CRM_Core_DAO::singleValueQuery(
@@ -48,6 +54,12 @@ class CRM_Sync_Matcher {
     return $praktijk_id;
   }
 
+  /**
+   * @param $praktijkopleider
+   * @param $warnings
+   *
+   * @return bool
+   */
   public function matchPraktijkOpleider($praktijkopleider,&$warnings) {
 
     if (empty($praktijkopleider)) {
