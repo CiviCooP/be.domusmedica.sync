@@ -24,14 +24,20 @@ class CRM_Sync_PermamedImporter
         $this->skip = $skip;
     }
 
-    public function truncate()
+  /**
+   *
+   */
+  public function truncate()
     {
         $dao = new CRM_Core_DAO();
         $dao->query('truncate table import_permamed');
 
     }
 
-    public function importCVStoTable($file){
+  /**
+   * @param $file
+   */
+  public function importCVStoTable($file){
         // allow the file import to finish in 5 minutes
         ini_set('max_execution_time', 300);
 

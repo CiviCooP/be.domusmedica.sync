@@ -16,6 +16,11 @@ class CRM_Sync_GenderTranslator {
   public function __construct() {
   }
 
+  /**
+   * @param $permamedGender
+   *
+   * @return bool|int
+   */
   public function translate($permamedGender) {
     if (empty($permamedGender)) {
       return FALSE;

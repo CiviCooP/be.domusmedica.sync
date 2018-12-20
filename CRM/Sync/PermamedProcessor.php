@@ -21,6 +21,9 @@ class CRM_Sync_PermamedProcessor {
     $this->stepsize = $stepsize;
   }
 
+  /**
+   * @return float
+   */
   private function calcSteps() {
     $calcRows = CRM_Core_DAO::singleValueQuery('SELECT count(1) FROM import_permamed WHERE processed = %1', array(
       '1' => array('N', 'String'),
@@ -29,6 +32,11 @@ class CRM_Sync_PermamedProcessor {
   }
 
 
+  /**
+   * @param \CRM_Queue_TaskContext $ctx
+   *
+   * @return bool
+   */
   public function process(CRM_Queue_TaskContext $ctx) {
     $dao = CRM_Core_DAO::executeQuery('SELECT * FROM import_permamed WHERE processed = %1 LIMIT %2', array(
       '1' => array('N', 'String'),
@@ -44,6 +52,9 @@ class CRM_Sync_PermamedProcessor {
     return TRUE;
   }
 
+  /**
+   * @param $queue
+   */
   public function fillQueue($queue) {
     $calcSteps = $this->calcSteps();
     for ($i = 0; $i <= $calcSteps; $i++) {
@@ -299,14 +310,20 @@ class CRM_Sync_PermamedProcessor {
 
     if(empty($dao->praktijknaam))
     {
-      $praktijknaam = 'Huisartsenpraktijk '.$dao->naam;
+      if(empty($praktijk_id)) {
+        $praktijknaam = 'Huisartsenpraktijk ' . $dao->naam;
+        $apiParams['organization_name'] = $praktijknaam;
+      } else {
+        // do not touch it.
+      }
     } else {
       $praktijknaam = $dao->praktijknaam;
+      $apiParams['organization_name'] = $praktijknaam;
     }
 
     $apiParams['contact_type'] = 'Organization';
     $apiParams['contact_sub_type'] = 'Praktijk';
-    $apiParams['organization_name'] = $praktijknaam;
+
     $apiParams['custom_' . $config->getBankrekeningCustomFieldId()] = $dao->rekeningnummer_prive;
 
     $result = civicrm_api3('Contact', 'create', $apiParams);
@@ -322,7 +339,13 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
-  private function processRelationship(&$errors,$context){
+  /**
+   * @param $errors
+   * @param $context
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  private function processRelationship(&$errors, $context){
 
     if (!empty($errors)) {
       return;
@@ -353,7 +376,15 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
-  private function processPraktijkOpleider($dao,&$errors,&$warnings,$context){
+  /**
+   * @param $dao
+   * @param $errors
+   * @param $warnings
+   * @param $context
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  private function processPraktijkOpleider($dao, &$errors, &$warnings, $context){
 
     if (!empty($errors)) {
       return;
@@ -548,7 +579,13 @@ class CRM_Sync_PermamedProcessor {
 
   }
 
-  private function addGroup(&$errors,$apiParams){
+  /**
+   * @param $errors
+   * @param $apiParams
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  private function addGroup(&$errors, $apiParams){
 
     if (!empty($errors)) {
       return;
