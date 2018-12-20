@@ -159,6 +159,7 @@ class CRM_Sync_PermamedProcessor {
         'contact_id' => $context['praktijk_id'],
         'location_type_id' => 'Praktijkadres',
         'phone_type_id' => 'Phone',
+        'is_primary' => 1,
         'phone' => $dao->telefoon,
       ));
       $this->processPhone($errors, array(
